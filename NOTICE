@@ -1,0 +1,11 @@
+Ultimate Measure
+Copyright 2026 Sasha Koltsov
+
+This work is a Python port and extension of "StemThickness"
+(https://github.com/RafalBuchner/StemThickness), Copyright 2015 Rafal Buchner,
+licensed under the Apache License, Version 2.0, with code samples by
+Georg Seifert, Rainer Scheichelbauer and Mark Frömberg.
+
+The bundled Python loader executable (Contents/MacOS/plugin) is the generic
+reporter stub from the Glyphs SDK (https://github.com/schriftgestalt/GlyphsSDK),
+Copyright Georg Seifert, distributed for use with Glyphs.app plug-ins.
