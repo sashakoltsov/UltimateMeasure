@@ -13,9 +13,9 @@
 	<key>CFBundleName</key>
 	<string>Ultimate Measure</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Based on StemThickness by Rafal Buchner / Georg Seifert / Rainer Scheichelbauer / Mark Frömberg (Apache 2.0). Option-gated Python port.</string>
 	<key>NSPrincipalClass</key>

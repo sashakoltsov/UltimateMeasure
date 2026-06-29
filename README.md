@@ -4,17 +4,19 @@ A Glyphs 3 reporter plugin for live, Figma-style measurement in the Edit View:
 stem/edge thickness and point-to-point X/Y distances. It draws only while you
 hold **Option**, and what it shows depends on whether a single node is selected.
 
+![Ultimate Measure in action](screenshot.gif)
+
 ## Install
 
-1. Quit Glyphs.
-2. If an earlier copy is installed, trash it:
-   `~/Library/Application Support/Glyphs 3/Plugins/UltimateMeasure.glyphsReporter`
-   (and any older `UltimateThickness.glyphsReporter` or `ShowStemThicknessOption.glyphsReporter` if present).
-3. Unzip and double-click `UltimateMeasure.glyphsReporter` (or copy it into
-   that Plugins folder).
-4. Launch Glyphs. If macOS blocks the bundled binary on first launch (only
-   relevant when installed from a downloaded zip, not via Plugin Manager):
-   `xattr -dr com.apple.quarantine "$HOME/Library/Application Support/Glyphs 3/Plugins/UltimateMeasure.glyphsReporter"`
+**Plugin Manager (recommended).** In Glyphs, open *Window → Plugin Manager*,
+find **Ultimate Measure**, click *Install*, and relaunch Glyphs.
+
+**Manual / from source.** Download or clone this repo and put
+`UltimateMeasure.glyphsReporter` in your Plugins folder (*Glyphs → Settings →
+Addons* shows its location, or `~/Library/Application Support/Glyphs 3/Plugins/`),
+then relaunch. If you installed from a downloaded zip and macOS blocks the bundle
+on first launch (Plugin Manager installs aren't affected):
+`xattr -dr com.apple.quarantine "$HOME/Library/Application Support/Glyphs 3/Plugins/UltimateMeasure.glyphsReporter"`
 
 ## Use
 
@@ -55,17 +57,9 @@ zero is omitted. (Selecting more than one node falls back to the stem ruler.)
 
 ## Tuning
 
-Constants at the top of `Contents/Resources/plugin.py`, in screen pixels unless
-noted. Edit and restart Glyphs.
-
-- `SNAP_PX` (10) — snap the ruler origin to a node within this of the cursor.
-- `CATCH_PX` (10) — selection mode: catch a node/handle/overlap point this close.
-- `VERTEX_TOL_PX` (3) — treat the nearest outline point as "on a vertex" within this.
-- `CORNER_TURN_DEG` (20) — a snapped node sharper than this counts as a corner.
-- `DOT_PX` (8) — endpoint dot size (uniform).
-- `TAG_H` / `TAG_PAD` / `TAG_RADIUS` / `TAG_FONT` / `TAG_TEXT_DY` — tag geometry.
-- `MIN_LEG` (0.5) — don't draw an X/Y leg shorter than this (em units).
-- `MAX_SPAN` (2000) — ignore stem spans longer than this (em units).
+The behaviour constants — snap and catch radii, dot size, tag geometry, fade
+duration and so on — are at the top of `Contents/Resources/plugin.py`, each
+commented. Edit and restart Glyphs.
 
 ## Notes
 

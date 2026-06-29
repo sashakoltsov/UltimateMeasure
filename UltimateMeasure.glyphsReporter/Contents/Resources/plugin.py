@@ -87,7 +87,7 @@ TAG_H = 16.0        # tag height
 TAG_PAD = 6.0       # tag left/right padding
 TAG_RADIUS = 4.0    # tag corner radius
 TAG_FONT = 12.0     # tag text size
-TAG_TEXT_DY = 2.5   # raise the digits within the tag by this many px
+TAG_TEXT_DY = 0.0   # optional manual nudge on top of metric centring (+ = up)
 MAX_SPAN = 2000.0   # ignore stem spans longer than this (em units)
 MIN_LEG = 0.5       # don't draw an X/Y leg shorter than this (em units)
 CORNER_TURN_DEG = 20.0  # snapped node sharper than this -> treat as a corner (X/Y)
@@ -446,20 +446,22 @@ class UltimateMeasure(ReporterPlugin):
 
     @objc.python_method
     def tagFont(self):
+        # System font — matches Glyphs' own UI labels and renders identically for
+        # every user (no dependence on an installed typeface). Monospaced digits
+        # so the badges don't jitter in width as the numbers change.
         if self._tagFont is None:
-            f = NSFont.fontWithName_size_("Inter-Medium", TAG_FONT)
-            if f is None:
-                f = NSFont.fontWithName_size_("Inter Medium", TAG_FONT)
-            if f is None:
-                f = NSFont.systemFontOfSize_weight_(TAG_FONT, NSFontWeightMedium)
-            self._tagFont = f
+            try:
+                self._tagFont = NSFont.monospacedDigitSystemFontOfSize_weight_(TAG_FONT, NSFontWeightMedium)
+            except Exception:
+                self._tagFont = NSFont.systemFontOfSize_weight_(TAG_FONT, NSFontWeightMedium)
         return self._tagFont
 
     @objc.python_method
     def drawTag(self, text, center, scale, bgColor, textColor):
         self._didDraw = True
+        font = self.tagFont()
         attrs = {
-            NSFontAttributeName: self.tagFont(),
+            NSFontAttributeName: font,
             NSForegroundColorAttributeName: textColor,
         }
         astr = NSAttributedString.alloc().initWithString_attributes_(text, attrs)
@@ -477,7 +479,16 @@ class UltimateMeasure(ReporterPlugin):
         rect = ((-tagW / 2.0, -TAG_H / 2.0), (tagW, TAG_H))
         bgColor.set()
         NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius_(rect, TAG_RADIUS, TAG_RADIUS).fill()
-        astr.drawAtPoint_((-tsize.width / 2.0, -tsize.height / 2.0 + TAG_TEXT_DY))
+        # Centre the digits by the font's own cap-height, not the line box.
+        # drawAtPoint's y is the text box bottom; baseline = y - descender, so
+        # baseline = descender puts the box bottom right, and we offset up by
+        # half the cap-height to centre the figures. Robust across fonts/OS,
+        # which differ in line metrics (the cause of the "text too high" bug).
+        try:
+            baseY = font.descender() - font.capHeight() / 2.0 + TAG_TEXT_DY
+        except Exception:
+            baseY = -tsize.height / 2.0 + TAG_TEXT_DY
+        astr.drawAtPoint_((-tsize.width / 2.0, baseY))
         ctx.restoreGraphicsState()
 
     # ----- stem ruler (nothing selected) ---------------------------------
